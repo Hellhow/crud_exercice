@@ -69,8 +69,11 @@
         <h1>Crud en Php</h1>
     </header>
     <aside class="row">
-        <a href="./page/add.php" class="btn btn-success col-3">Ajouter un user</a>
-        <a href="#" class="btn btn-danger col-3 offset-1">Déconnexion</a>
+        <a href="./page/add.php" class="btn btn-success col-2">Ajouter un user</a>
+        <a href="#" class="btn btn-danger col-2 offset-1">Déconnexion</a>
+        <?php
+        // echo '<br>' . base64_decode($_GET["m"]);
+        ?>
     </aside>
     <!-- !SECTION header -->
 
@@ -85,7 +88,7 @@
                 <th scope="col">Pays</th>
                 <th scope="col">Email</th>
                 <th scope="col">Comment</th>
-                <th scope="col">Métier</th>
+                <th scope="col">Métiers</th>
                 <th scope="col">URL</th>
                 <th scope="col">Edition</th>
             </thead>
@@ -178,7 +181,6 @@
     </footer>
     <!-- !SECTION footer -->
     <?php
-    // echo base64_decode($_GET["m"]);
     // On ferme la co
     $conn = null;
     ?>

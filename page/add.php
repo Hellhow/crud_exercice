@@ -63,6 +63,7 @@
 </head>
 
 <body class="container">
+    <br>
     <?php
     // var d'id MySQL
     $serverName = 'localhost';
@@ -83,12 +84,14 @@
         // vérification
         foreach ($_POST as $key => $value) {
             if (empty($value)) {
-                echo ('<span class="alert alert-danger">Erreur : champ ' . $key . ' est vide.</span>');
+                echo ('<div class="alert alert-danger alert-dismissible"><span>Erreur : champ ' . $key . ' est vide.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
                 $test = false;
                 break;
             }
             if ($key == 'email' && !filter_var(trim($value, " \n\r\t\v\x00...\x1F"), FILTER_VALIDATE_EMAIL)) {
-                echo ('<span class="alert alert-danger">Erreur : champ ' . $key . ' est invalide.</span>');
+                echo ('<div class="alert alert-danger alert-dismissible"><span>Erreur : champ ' . $key . ' est invalide.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
                 $test = false;
                 break;
             }
@@ -150,7 +153,9 @@
                     $sth->bindParam($value, $vars[$key]);
                 }
                 $sth->execute();
-                $msg = '<span class="alert alert-success">Votre inscription a été validé.</span>';
+                $msg = '<div class="alert alert-success alert-dismissible"><span>Votre inscription a été validé.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                echo $msg;
                 // header('Location:../index.php?m=' . urlencode(base64_encode($msg)));
             }
 
