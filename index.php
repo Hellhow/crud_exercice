@@ -76,7 +76,7 @@
 
     <!-- SECTION main -->
     <main class="row my-3">
-        <table class="table table-light table-striped">
+        <table class="table table-light table-striped text-center">
             <thead class="table-secondary">
                 <th scope="col">Name</th>
                 <th scope="col">First name</th>
@@ -120,12 +120,14 @@
             `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
             `name` varchar(250) NOT NULL,
             `firstname` varchar(250) NOT NULL,
-            `age` int(11) UNSIGNED NOT NULL,
-            `tel` int(11) UNSIGNED NOT NULL,
+            `age` varchar(10) NOT NULL,
+            `tel` varchar(14) NOT NULL,
             `email` varchar(250) NOT NULL,
             `pays` varchar(250) NOT NULL,
             `comment` text NOT NULL,
-            `metier` varchar(250) NOT NULL,
+            `metier1` varchar(250) DEFAULT NULL,
+            `metier2` varchar(250) DEFAULT NULL,
+            `metier3` varchar(250) DEFAULT NULL,
             `url` varchar(250) NOT NULL,
             PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -137,17 +139,18 @@
                     if ($stResult === false) {
                         die("Erreur");
                     }
+
                     while ($row = $stResult->fetch(PDO::FETCH_ASSOC)) :
                         echo '
                         <tr>
                             <th scope="row">' . stripslashes($row['name']) . '</th>
                             <td>' . stripslashes($row['firstname']) . '</td>
-                            <td>' . $date - stripslashes($row['age']) . '</td>
+                            <td>' . $date - substr(stripslashes($row['age']), 0, 4) . '</td>
                             <td>' . stripslashes($row['tel']) . '</td>
                             <td>' . stripslashes($row['email']) . '</td>
                             <td>' . stripslashes($row['pays']) . '</td>
                             <td>' . stripslashes($row['comment']) . '</td>
-                            <td>' . stripslashes($row['metier']) . '</td>
+                            <td>' . stripslashes($row['metier1'] . ' / ' . $row['metier2'] . ' / ' . $row['metier3']) . '</td>
                             <td>' . stripslashes($row['url']) . '</td>
                             <td>
                             <a href="./page/read.php?id=' . $row['id'] . '" class="btn btn-light">Read</a>
@@ -175,6 +178,7 @@
     </footer>
     <!-- !SECTION footer -->
     <?php
+    // echo base64_decode($_GET["m"]);
     // On ferme la co
     $conn = null;
     ?>

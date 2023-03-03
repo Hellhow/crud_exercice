@@ -70,63 +70,94 @@
     $passWord = '';
     $dbName = 'exo_crud_php';
     $dbTable = 'crud_table';
-    $dsn = "mysql:host=$serverName";
+    $dsn = "mysql:host=$serverName;dbname=$dbName";
+    $test = true;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        // var metier default
+        $metier1 = null;
+        $metier2 = null;
+        $metier3 = null;
 
         // vérification
         foreach ($_POST as $key => $value) {
             if (empty($value)) {
                 echo ('<span class="alert alert-danger">Erreur : champ ' . $key . ' est vide.</span>');
+                $test = false;
                 break;
             }
             if ($key == 'email' && !filter_var(trim($value, " \n\r\t\v\x00...\x1F"), FILTER_VALIDATE_EMAIL)) {
                 echo ('<span class="alert alert-danger">Erreur : champ ' . $key . ' est invalide.</span>');
+                $test = false;
                 break;
             }
             // trim retire des elements en début et fin de la string
-            $value = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+            switch ($key) {
+                case 'name':
+                    $name = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'firstname':
+                    $firstname = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'email':
+                    $age = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'tel':
+                    $tel = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'pays':
+                    $pays = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'metier1':
+                    $metier1 = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'metier2':
+                    $metier2 = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'metier3':
+                    $metier3 = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'url':
+                    $url = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                case 'comment':
+                    $comment = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
+                    break;
+                default:
+                    break;
+            }
         }
 
         // var du post
-        $name = $_POST['name'];
-        $firstname = $_POST['firstname'];
-        $age = $_POST['age'];
         $email = $_POST['email'];
-        $tel = $_POST['tel'];
-        $pays = $_POST['pays'];
-        $metier = $_POST['metier'];
-        $url = $_POST['url'];
-        $comment = $_POST['comment'];
 
-        try {
-            // log à la DB
-            $conn = new PDO($dsn, $userName, $passWord);
-            // on def le mode d'erreur de PDO sur Exception
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($test) {
+            try {
+                // log à la DB
+                $conn = new PDO($dsn, $userName, $passWord);
+                // on def le mode d'erreur de PDO sur Exception
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // insertion de données
-            $sth = $conn->prepare("
-        INSERT IGNORE INTO $dbTable(name, firstname, age, tel, email, pays, comment, metier, url) 
-        VALUES(:name, :firstname, :age, :tel, :email, :pays, :comment, :metier, :url)
+                // insertion de données
+                $sth = $conn->prepare("
+        INSERT IGNORE INTO $dbTable(name, firstname, age, tel, email, pays, comment, metier1, metier2, metier3, url) 
+        VALUES(:name, :firstname, :age, :tel, :email, :pays, :comment, :metier1, :metier2, :metier3, :url)
         ");
+                $params = [':name', ':firstname', ':age', ':tel', ':email', ':pays', ':comment', ':metier1', ':metier2', ':metier3', ':url'];
+                $vars = [$name, $firstname, $age, $tel, $email, $pays, $comment, $metier1, $metier2, $metier3, $url];
+                foreach ($params as $key => $value) {
+                    $sth->bindParam($value, $vars[$key]);
+                }
+                $sth->execute();
+                $msg = '<span class="alert alert-success">Votre inscription a été validé.</span>';
+                // header('Location:../index.php?m=' . urlencode(base64_encode($msg)));
+            }
 
-            $sth->bindParam(':name', $name);
-            $sth->bindParam(':firstname', $firstname);
-            $sth->bindParam(':age', $age);
-            $sth->bindParam(':tel', $tel);
-            $sth->bindParam(':email', $email);
-            $sth->bindParam(':pays', $pays);
-            $sth->bindParam(':comment', $comment);
-            $sth->bindParam(':metier', $metier);
-            $sth->bindParam(':url', $url);
-            $sth->execute();
-            echo '<span class="alert alert-success">Votre inscription a été validé.</span>';
-        }
-
-        // pour les erreurs de co à la base
-        catch (PDOException $e) {
-            die("<p>Impossible de se connecter au serveur $serverName : " . $e->getMessage() . "</p>");
+            // pour les erreurs de co à la base
+            catch (PDOException $e) {
+                die("<p>Impossible de se connecter au serveur $serverName : " . $e->getMessage() . "</p>");
+            }
         }
     }
     ?>
@@ -459,16 +490,16 @@
             <p class="row mb-3 px-1"><span class="col-md-2 offset-md-2 text-md-end">Métier :</span></p>
             <div class="row mb-3 px-1 fs-7">
                 <div class="col-3 col-md-1 offset-md-4">
-                    <label class="text-md-end" for="dev">DEV :</label>
-                    <input type="checkbox" name="metier" id="dev" value="dev" checked>
+                    <label class="text-md-end" for="metier1">DEV :</label>
+                    <input type="checkbox" name="metier1" id="metier1" value="dev" checked>
                 </div>
                 <div class="col-4 col-md-1">
-                    <label class="text-md-end" for="reseau">Réseau :</label>
-                    <input type="checkbox" name="metier" id="reseau" value="reseau">
+                    <label class="text-md-end" for="metier2">Réseau :</label>
+                    <input type="checkbox" name="metier2" id="metier2" value="reseau">
                 </div>
                 <div class="col-4 col-md-2">
-                    <label class="text-md-end" for="integr">Intégrateur :</label>
-                    <input type="checkbox" name="metier" id="integr" value="integr">
+                    <label class="text-md-end" for="metier3">Intégrateur :</label>
+                    <input type="checkbox" name="metier3" id="metier3" value="integr">
                 </div>
             </div>
             <div class="row mb-3 px-1">
