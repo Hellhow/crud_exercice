@@ -103,7 +103,7 @@
                 case 'firstname':
                     $firstname = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
                     break;
-                case 'email':
+                case 'age':
                     $age = htmlentities(addslashes(trim($value, " \n\r\t\v\x00...\x1F")), ENT_QUOTES);
                     break;
                 case 'tel':

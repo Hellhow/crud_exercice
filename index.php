@@ -85,8 +85,8 @@
                 <th scope="col">First name</th>
                 <th scope="col">Age</th>
                 <th scope="col">Tel</th>
-                <th scope="col">Pays</th>
                 <th scope="col">Email</th>
+                <th scope="col">Pays</th>
                 <th scope="col">Comment</th>
                 <th scope="col">Métiers</th>
                 <th scope="col">URL</th>
